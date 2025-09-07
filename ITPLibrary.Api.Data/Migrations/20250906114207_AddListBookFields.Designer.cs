@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ITPLibrary.Api.Data.Migrations
 {
     [DbContext(typeof(ITPLibraryDbContext))]
-    [Migration("20250829165906_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20250906114207_AddListBookFields")]
+    partial class AddListBookFields
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -37,6 +37,30 @@ namespace ITPLibrary.Api.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Genre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsPromoted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("Popular")
+                        .HasColumnType("bit");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<bool>("RecentlyAdded")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ShortDescription")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Thumbnail")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
