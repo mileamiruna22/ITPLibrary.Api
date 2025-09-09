@@ -91,7 +91,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// Adaug? aceste dou? linii pentru a folosi autentificarea ?i autorizarea
+
 app.UseAuthentication();
 app.UseAuthorization();
 

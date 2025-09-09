@@ -1,5 +1,6 @@
 ﻿using Dapper;
-using ITPLibrary.Api.Core.Dtos; // Adaugă această linie
+//using ITPLibrary.Api.Core.Dtos; 
+using ITPLibrary.Api.Data.Models;
 using ITPLibrary.Api.Data.Repositories;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
@@ -23,23 +24,23 @@ namespace ITPLibrary.Api.Data.Repositories
             await _dbConnection.ExecuteAsync(sql, new { UserId = userId, BookId = bookId });
         }
 
-        public async Task<IEnumerable<ShoppingCartItemDto>> GetShoppingCartItemsAsync(int userId)
+        public async Task<IEnumerable<ShoppingCartItem>> GetShoppingCartItemsAsync(int userId)
         {
             var sql = @"
-                SELECT
-                    sc.Id,
-                    sc.BookId,
-                    b.Title,
-                    b.Price,
-                    b.Author,
-                    b.Thumbnail
-                FROM
-                    ShoppingCart sc
-                JOIN
-                    Books b ON sc.BookId = b.Id
-                WHERE
-                    sc.UserId = @UserId";
-            return await _dbConnection.QueryAsync<ShoppingCartItemDto>(sql, new { UserId = userId });
+        SELECT
+            sc.Id,
+            sc.BookId,
+            b.Title,
+            b.Price,
+            b.Author,
+            b.Thumbnail
+        FROM
+            ShoppingCart sc
+        JOIN
+            Books b ON sc.BookId = b.Id
+        WHERE
+            sc.UserId = @UserId";
+            return await _dbConnection.QueryAsync<ShoppingCartItem>(sql, new { UserId = userId });
         }
     }
 }

@@ -7,11 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ITPLibrary.Api.Data\ITPLibrary.Api.Data.csproj" />
+    <Compile Remove="Profiles\**" />
+    <EmbeddedResource Remove="Profiles\**" />
+    <None Remove="Profiles\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Profiles\" />
+    <ProjectReference Include="..\ITPLibrary.Api.Data\ITPLibrary.Api.Data.csproj" />
   </ItemGroup>
 
   <ItemGroup>

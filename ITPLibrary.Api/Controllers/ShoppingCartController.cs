@@ -31,5 +31,17 @@ namespace ITPLibrary.Api.Controllers
             await _shoppingCartService.AddShoppingCartItemAsync(int.Parse(userId), bookId);
             return Ok("Item added to shopping cart.");
         }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> GetShoppingCart()
+        {
+            
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+          
+            var items = await _shoppingCartService.GetShoppingCartItemsAsync(userId);
+           
+            return Ok(items);
+        }
     }
 }

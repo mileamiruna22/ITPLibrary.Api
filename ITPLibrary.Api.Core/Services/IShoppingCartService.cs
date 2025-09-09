@@ -10,6 +10,7 @@ namespace ITPLibrary.Api.Core.Services
     public interface IShoppingCartService
     {
         Task AddShoppingCartItemAsync(int userId, int bookId);
-       
+        Task<IEnumerable<ShoppingCartItemDto>> GetShoppingCartItemsAsync(int userId);
+
     }
 }
