@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: itplibrary-db
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=YourStrongPassword!123
+    ports:
+      - "1433:1433"
+    volumes:
+      - ./db_backup:/var/opt/mssql/backup 
+
+  itplibrary-api:
+    build:
+      context: .
+    container_name: itplibrary-api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - "ConnectionStrings:DefaultConnection=Server=db;Database=ITPLibraryDb;User Id=sa;Password=YourStrongPassword!123;TrustServerCertificate=True"
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
