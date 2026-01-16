@@ -1,4 +1,4 @@
-version: '3.8'
+﻿version: '3.8'
 
 services:
   db:
@@ -10,7 +10,7 @@ services:
     ports:
       - "1433:1433"
     volumes:
-      - ./db_backup:/var/opt/mssql/backup 
+      - ./sql_backup:/var/opt/mssql/backup 
 
   itplibrary-api:
     build:

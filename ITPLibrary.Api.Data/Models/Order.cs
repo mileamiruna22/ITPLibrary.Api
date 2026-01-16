@@ -9,13 +9,12 @@ namespace ITPLibrary.Api.Data.Models
         public int UserId { get; set; }
         public decimal TotalAmount { get; set; }
         public DateTime OrderDate { get; set; }
-        public string Status { get; set; }
+        public string Status { get; set; } = "Processing";
         public string Street { get; set; }
         public string City { get; set; }
         public string State { get; set; }
         public string PostalCode { get; set; }
         public string Country { get; set; }
-        // Proprietate pentru articolele din comandă
         public List<OrderItem> OrderItems { get; set; }
     }
 }

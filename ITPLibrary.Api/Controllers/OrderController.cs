@@ -19,11 +19,11 @@ namespace ITPLibrary.Api.Controllers
 
         [HttpPost("checkout")]
         [Authorize]
-        public async Task<IActionResult> Checkout([FromBody] PlaceOrderDto placeOrderDto)
+        public async Task<IActionResult> Checkout1([FromBody] PlaceOrderDto placeOrderDto)
         {
             var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-            var orderId = await _orderService.Checkout(userId, placeOrderDto);
+            var orderId = await _orderService.Checkout1(userId, placeOrderDto);
 
             return Ok(new { OrderId = orderId });
         }
@@ -36,9 +36,38 @@ namespace ITPLibrary.Api.Controllers
 
             var orders = await _orderService.GetUserOrders(userId);
 
+
             return Ok(orders);
         }
 
+
+        [HttpGet("{id}")]
+        [Authorize]
+        public async Task<IActionResult> GetOrderById(int id)
+        {
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            var order = await _orderService.GetOrderById(userId, id);
+
+            if (order == null)
+            {
+                return NotFound(new { message = "Order not found" });
+            }
+
+            return Ok(order);
+        }
+
+
+        [HttpPut("{id}/details")]
+        [Authorize]
+        public async Task<IActionResult> UpdateOrderDetails(int id, [FromBody] UpdateOrderDetailsDto updateDto)
+        {
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            await _orderService.UpdateOrderDetails(userId, id, updateDto);
+
+            return Ok(new { message = "Order updated successfully" });
+        }
 
         [HttpPut]
         [Authorize]

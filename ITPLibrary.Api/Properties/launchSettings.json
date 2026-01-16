@@ -36,6 +36,15 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
+    },
+    "Docker": {
+      "commandName": "Docker",
+      "launchBrowser": true,
+      "launchUrl": "{Scheme}://localhost:{Port}/swagger",
+      "publishAllPorts": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development" 
+      }
     }
   }
 }

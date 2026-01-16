@@ -18,12 +18,31 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
+//using ITPLibrary.Api.Core.Services.Email;
+//using ITPLibrary.Api.Core.Dtos.Email;
+//using ITPLibrary.Api.Core.Services.JWT;
+//using ITPLibrary.Api.Core.Dtos.User;
+
 
 var builder = WebApplication.CreateBuilder(args);
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-//builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+                      policy =>
+                      {
+                          policy.WithOrigins("http://localhost:5173",
+                                             "http://127.0.0.1:5173",
+                                             "https://localhost:5173")
+                                .AllowAnyHeader()
+                                .AllowAnyMethod(); 
+                      });
+});
 
 builder.Services.AddSwaggerGen(options =>
 {
@@ -92,12 +111,13 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseCors(MyAllowSpecificOrigins);
 
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
 
 app.MapGet("/api/minimal/books", async (IBookService bookService) =>
 {
@@ -136,5 +156,6 @@ app.MapPost("/api/recover-password", async (IUserService userService, PasswordRe
     var result = await userService.RecoverPasswordAsync(recoveryDto);
     return Results.Ok("If a user with that email exists, a password recovery email has been sent.");
 });
+
 
 app.Run();

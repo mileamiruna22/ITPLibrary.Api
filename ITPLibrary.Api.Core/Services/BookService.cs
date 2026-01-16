@@ -40,7 +40,13 @@ namespace ITPLibrary.Api.Core.Services
             {
                 Title = bookDto.Title,
                 Author = bookDto.Author,
-                Genre = bookDto.Genre
+                Genre = bookDto.Genre,
+                Image = bookDto.Image,
+                LongDescription = bookDto.LongDescription,
+                Price = bookDto.Price,
+                RecentlyAdded = true,
+                Popular = false,
+                Thumbnail = bookDto.Image
             };
 
             await _bookRepository.AddBookAsync(book);
@@ -79,8 +85,8 @@ namespace ITPLibrary.Api.Core.Services
                 {
                     Id = book.Id,
                     Title = book.Title,
-                    ShortDescription = book.ShortDescription,
-                    ImageUrl = book.ImageUrl
+                    LongDescription = book.LongDescription,
+                    Image = book.Image
                 });
             }
             return bookDtos;

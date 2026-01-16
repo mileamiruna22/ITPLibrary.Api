@@ -8,6 +8,7 @@ namespace ITPLibrary.Api.Core.Dtos
         public int Id { get; set; }
         public decimal TotalAmount { get; set; }
         public DateTime OrderDate { get; set; }
+        public string Status { get; set; }
         public AddressDto ShippingAddress { get; set; }
         public List<OrderItemDto> OrderItems { get; set; }
     }

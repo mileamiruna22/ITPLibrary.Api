@@ -1,7 +1,7 @@
-# Utilizeaza o imagine de baza pentru SDK-ul .NET Core
+﻿# Utilizeaza o imagine de baza pentru SDK-ul .NET Core
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 
-# Seteaza directorul de lucru �n container
+# Seteaza directorul de lucru în container
 WORKDIR /app
 
 # Copiaza fi?ierele de proiect .csproj ?i restaureaza dependen?ele
@@ -22,4 +22,5 @@ RUN dotnet publish -c Release -o out
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
 COPY --from=build /app/ITPLibrary.Api/out ./
+ENV ASPNETCORE_URLS=http://+:8080
 ENTRYPOINT ["dotnet", "ITPLibrary.Api.dll"]

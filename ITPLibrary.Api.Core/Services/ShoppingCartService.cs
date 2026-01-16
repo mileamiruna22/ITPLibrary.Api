@@ -33,5 +33,10 @@ namespace ITPLibrary.Api.Core.Services
                 Thumbnail = item.Thumbnail
             });
         }
+
+        public async Task RemoveShoppingCartItemAsync(int userId, int itemId)
+        {
+            await _shoppingCartRepository.RemoveShoppingCartItemAsync(userId, itemId);
+        }
     }
 }

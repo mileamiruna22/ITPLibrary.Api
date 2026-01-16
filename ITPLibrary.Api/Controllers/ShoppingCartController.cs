@@ -1,4 +1,4 @@
-﻿using ITPLibrary.Api.Core.Services;
+﻿ using ITPLibrary.Api.Core.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -43,5 +43,16 @@ namespace ITPLibrary.Api.Controllers
            
             return Ok(items);
         }
-    }
+
+        [HttpDelete("{itemId}")]
+        [Authorize]
+        public async Task<IActionResult> RemoveShoppingCartItem([FromRoute] int itemId)
+        {
+            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            await _shoppingCartService.RemoveShoppingCartItemAsync(userId, itemId);
+
+            return Ok("Item removed from shopping cart.");
+        }
+    } 
 }

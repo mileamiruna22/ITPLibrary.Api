@@ -11,6 +11,7 @@ namespace ITPLibrary.Api.Core.Services
     {
         Task AddShoppingCartItemAsync(int userId, int bookId);
         Task<IEnumerable<ShoppingCartItemDto>> GetShoppingCartItemsAsync(int userId);
+        Task RemoveShoppingCartItemAsync(int userId, int itemId);
 
     }
 }

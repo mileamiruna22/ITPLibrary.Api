@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ITPLibrary.Api.Data.Migrations
 {
     [DbContext(typeof(ITPLibraryDbContext))]
-    [Migration("20250906114207_AddListBookFields")]
-    partial class AddListBookFields
+    [Migration("20251031173948_FinalSchema")]
+    partial class FinalSchema
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -40,12 +40,20 @@ namespace ITPLibrary.Api.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Image")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("ImageUrl")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsPromoted")
                         .HasColumnType("bit");
+
+                    b.Property<string>("LongDescription")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("Popular")
                         .HasColumnType("bit");
@@ -71,6 +79,46 @@ namespace ITPLibrary.Api.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Books");
+                });
+
+            modelBuilder.Entity("ITPLibrary.Api.Data.Entities.ShoppingCart", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("BookId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ShoppingCart");
+                });
+
+            modelBuilder.Entity("ITPLibrary.Api.Data.Entities.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users");
                 });
 #pragma warning restore 612, 618
         }

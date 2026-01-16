@@ -42,5 +42,12 @@ namespace ITPLibrary.Api.Data.Repositories
             sc.UserId = @UserId";
             return await _dbConnection.QueryAsync<ShoppingCartItem>(sql, new { UserId = userId });
         }
+
+        public async Task RemoveShoppingCartItemAsync(int userId, int itemId)
+        {
+           
+            var sql = "DELETE FROM ShoppingCart WHERE Id = @ItemId AND UserId = @UserId";
+            await _dbConnection.ExecuteAsync(sql, new { ItemId = itemId, UserId = userId });
+        }
     }
 }

@@ -19,12 +19,28 @@ namespace ITPLibrary.Api.Data.Repositories
             _dbConnection = new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
         }
 
-        public async Task<int> Checkout(int userId, string street, string city, string state, string postalCode, string country, List<int> bookIds)
+        private DataTable ToDataTable(List<int> bookIds)
         {
-            var sql = "spCheckout";
+            var dt = new DataTable();
+            dt.Columns.Add("BookId", typeof(int));
+
+            foreach (var id in bookIds)
+            {
+                dt.Rows.Add(id);
+            }
+            return dt;
+        }
+
+        public async Task<int> Checkout1(int userId, string street, string city, string state, string postalCode, string country, List<int> bookIds)
+        {
+            var sql = "spCheckout1";
             var parameters = new DynamicParameters();
             parameters.Add("@UserId", userId);
-            parameters.Add("@BookIds", string.Join(",", bookIds));
+            // parameters.Add("@BookIds", string.Join(",", bookIds));
+            parameters.Add(
+                "@BookIds",
+                ToDataTable(bookIds).AsTableValuedParameter("BookIdList")
+            );
             parameters.Add("@Street", street);
             parameters.Add("@City", city);
             parameters.Add("@State", state);
@@ -40,15 +56,15 @@ namespace ITPLibrary.Api.Data.Repositories
         public async Task<List<Order>> GetUserOrders(int userId)
         {
             var sql = @"
-        SELECT 
-            o.Id, o.UserId, o.TotalAmount, o.OrderDate,
-            o.Street, o.City, o.State, o.PostalCode, o.Country,
-            oi.OrderId, oi.BookId,
-            b.Id, b.Title, b.Author, b.Description, b.Price, b.ImageUrl, b.Category
-        FROM Orders o
-        JOIN OrderItems oi ON o.Id = oi.OrderId
-        JOIN Books b ON oi.BookId = b.Id
-        WHERE o.UserId = @UserId";
+                SELECT 
+                    o.Id, o.UserId, o.TotalAmount, o.OrderDate, o.Status,
+                    o.Street, o.City, o.State, o.PostalCode, o.Country,
+                    oi.OrderId, oi.BookId,
+                    b.Id, b.Title, b.Author, b.Price
+                FROM Orders o
+                JOIN OrderItems oi ON o.Id = oi.OrderId
+                JOIN Books b ON oi.BookId = b.Id
+                WHERE o.UserId = @UserId";
 
             var orderDictionary = new Dictionary<int, Order>();
 
@@ -86,9 +102,71 @@ namespace ITPLibrary.Api.Data.Repositories
 
         public async Task<Order> GetOrderById(int orderId)
         {
-            var sql = "SELECT * FROM Orders WHERE Id = @OrderId";
-            var order = await _dbConnection.QuerySingleOrDefaultAsync<Order>(sql, new { OrderId = orderId });
-            return order;
+            var sql = @"
+        SELECT 
+            o.Id, o.UserId, o.TotalAmount, o.OrderDate, o.Status,
+            o.Street, o.City, o.State, o.PostalCode, o.Country,
+            oi.OrderId, oi.BookId, oi.Quantity, oi.PricePerUnit,
+            b.Id, b.Title, b.Author, b.Price
+        FROM Orders o
+        LEFT JOIN OrderItems oi ON o.Id = oi.OrderId
+        LEFT JOIN Books b ON oi.BookId = b.Id
+        WHERE o.Id = @OrderId";
+
+            var orderDictionary = new Dictionary<int, Order>();
+
+            var orders = await _dbConnection.QueryAsync<Order, OrderItem, Book, Order>(
+                sql,
+                (order, orderItem, book) =>
+                {
+                    if (!orderDictionary.TryGetValue(order.Id, out var existingOrder))
+                    {
+                        existingOrder = order;
+                        existingOrder.OrderItems = new List<OrderItem>();
+                        orderDictionary.Add(existingOrder.Id, existingOrder);
+                    }
+
+                    if (orderItem != null)
+                    {
+                        orderItem.Book = book;
+                        existingOrder.OrderItems.Add(orderItem);
+                    }
+
+                    return existingOrder;
+                },
+                new { OrderId = orderId },
+                splitOn: "OrderId, Id"
+            );
+
+            return orders.FirstOrDefault();
+        }
+
+        public async Task UpdateOrderDetails(
+            int orderId,
+            string street,
+            string city,
+            string state,
+            string postalCode,
+            string country)
+        {
+            var sql = @"
+        UPDATE Orders 
+        SET Street = @Street,
+            City = @City,
+            State = @State,
+            PostalCode = @PostalCode,
+            Country = @Country
+        WHERE Id = @OrderId";
+
+            await _dbConnection.ExecuteAsync(sql, new
+            {
+                OrderId = orderId,
+                Street = street,
+                City = city,
+                State = state,
+                PostalCode = postalCode,
+                Country = country
+            });
         }
     }
 }

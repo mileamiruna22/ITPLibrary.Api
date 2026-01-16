@@ -10,10 +10,10 @@ namespace ITPLibrary.Api.Core.Dtos
     {
         public int Id { get; set; }
         public string Title { get; set; }
-        public string Author { get; set; }
         public string Genre { get; set; }
-
-        public string ShortDescription { get; set; }
-        public string ImageUrl { get; set; }
+        public decimal Price { get; set; }
+        public string Author { get; set; }
+        public string LongDescription { get; set; }
+        public string Image { get; set; }
     }
 }

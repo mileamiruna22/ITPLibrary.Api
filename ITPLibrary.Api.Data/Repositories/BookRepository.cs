@@ -23,7 +23,14 @@ namespace ITPLibrary.Api.Data.Repositories
 
         public async Task AddBookAsync(Book book)
         {
-            var sql = "INSERT INTO Books (Title, Author, Genre) VALUES (@Title, @Author, @Genre)";
+            //var sql = "INSERT INTO Books (Title, Author, Genre, LongDescription, Image, Price) VALUES (@Title, @Author, @Genre, @LongDescription, @Image, @Price)";
+            //await _dbConnection.ExecuteAsync(sql, book);
+
+            var sql = "INSERT INTO Books (" +
+                "Title, Author, Genre, Image, IsPromoted, Price, Thumbnail, Popular, RecentlyAdded, LongDescription" +
+                ") VALUES (" +
+                "@Title, @Author, @Genre, @Image, @IsPromoted, @Price, @Thumbnail, @Popular, @RecentlyAdded, @LongDescription" +
+                ")";
             await _dbConnection.ExecuteAsync(sql, book);
         }
 

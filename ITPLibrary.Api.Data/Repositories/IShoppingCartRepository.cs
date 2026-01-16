@@ -15,5 +15,6 @@ namespace ITPLibrary.Api.Data.Repositories
         Task AddShoppingCartItemAsync(int userId, int bookId);
 
         Task<IEnumerable<ShoppingCartItem>> GetShoppingCartItemsAsync(int userId);
+        Task RemoveShoppingCartItemAsync(int userId, int itemId);
     }
 }

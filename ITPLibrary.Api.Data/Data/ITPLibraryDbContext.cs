@@ -13,8 +13,9 @@ namespace ITPLibrary.Api.Data.Data
         }
 
         public DbSet<Book> Books { get; set; }
+        public DbSet<User> Users { get; set; } = default!; 
+        public DbSet<ShoppingCart> ShoppingCart { get; set; } = default!;
 
-       
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)

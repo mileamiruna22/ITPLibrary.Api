@@ -15,9 +15,9 @@ namespace ITPLibrary.Api.Core.Services
             _orderRepository = orderRepository;
         }
 
-        public async Task<int> Checkout(int userId, PlaceOrderDto placeOrderDto)
+        public async Task<int> Checkout1(int userId, PlaceOrderDto placeOrderDto)
         {
-            return await _orderRepository.Checkout(
+            return await _orderRepository.Checkout1(
                 userId,
                 placeOrderDto.ShippingAddress.Street,
                 placeOrderDto.ShippingAddress.City,
@@ -40,6 +40,7 @@ namespace ITPLibrary.Api.Core.Services
                 {
                     Id = order.Id,
                     TotalAmount = order.TotalAmount,
+                    Status = order.Status,
                     OrderDate = order.OrderDate,
                     ShippingAddress = new AddressDto
                     {
@@ -59,7 +60,8 @@ namespace ITPLibrary.Api.Core.Services
                         BookId = item.BookId,
                         Title = item.Book.Title,
                         Author = item.Book.Author,
-                        Price = item.Book.Price
+                        Quantity = item.Quantity, 
+                        PricePerUnit = item.PricePerUnit
                     });
                 }
                 ordersDto.Add(orderDto);
@@ -68,6 +70,46 @@ namespace ITPLibrary.Api.Core.Services
             return ordersDto;
         }
 
+        public async Task<OrderDto> GetOrderById(int userId, int orderId)
+        {
+            var order = await _orderRepository.GetOrderById(orderId);
+
+            if (order == null || order.UserId != userId)
+            {
+                return null;
+            }
+
+            var orderDto = new OrderDto
+            {
+                Id = order.Id,
+                TotalAmount = order.TotalAmount,
+                Status = order.Status,
+                OrderDate = order.OrderDate,
+                ShippingAddress = new AddressDto
+                {
+                    Street = order.Street,
+                    City = order.City,
+                    State = order.State,
+                    PostalCode = order.PostalCode,
+                    Country = order.Country,
+                },
+                OrderItems = new List<OrderItemDto>()
+            };
+
+            foreach (var item in order.OrderItems)
+            {
+                orderDto.OrderItems.Add(new OrderItemDto
+                {
+                    BookId = item.BookId,
+                    Title = item.Book?.Title,
+                    Author = item.Book?.Author,
+                    Quantity = item.Quantity,
+                    PricePerUnit = item.PricePerUnit
+                });
+            }
+
+            return orderDto;
+        }
         public async Task UpdateOrderStatus(int userId, UpdateOrderStatusDto updateOrderStatusDto)
         {
             var order = await _orderRepository.GetOrderById(updateOrderStatusDto.OrderId);
@@ -83,6 +125,30 @@ namespace ITPLibrary.Api.Core.Services
             }
 
             await _orderRepository.UpdateOrderStatus(updateOrderStatusDto.OrderId, updateOrderStatusDto.NewStatus);
+        }
+
+        public async Task UpdateOrderDetails(int userId, int orderId, UpdateOrderDetailsDto updateDto)
+        {
+            var order = await _orderRepository.GetOrderById(orderId);
+
+            if (order == null || order.UserId != userId)
+            {
+                throw new UnauthorizedAccessException("You are not authorized to update this order.");
+            }
+
+            if (order.Status == "Completed" || order.Status == "Canceled")
+            {
+                throw new InvalidOperationException($"Order with ID {orderId} cannot be updated because its status is '{order.Status}'.");
+            }
+
+            await _orderRepository.UpdateOrderDetails(
+                orderId,
+                updateDto.Street,
+                updateDto.City,
+                updateDto.State,
+                updateDto.PostalCode,
+                updateDto.Country
+            );
         }
     }
 }

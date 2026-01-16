@@ -31,7 +31,7 @@ namespace ITPLibrary.Api.Controllers
             return Ok(books);
         }
 
-        [HttpGet("all")]
+        [HttpGet]
         public async Task<IActionResult> GetBookList()
         {
             var books = await _bookService.GetBookListAsync();
