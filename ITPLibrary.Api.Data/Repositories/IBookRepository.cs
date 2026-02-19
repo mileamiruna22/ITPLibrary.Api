@@ -9,8 +9,9 @@ namespace ITPLibrary.Api.Data.Repositories
         Task<List<Book>> GetPopularBooksAsync();
         Task AddBookAsync(Book book);
         Task<List<Book>> GetPromotedBooksAsync();
-        Task<List<Book>> GetBookListAsync();
+        //Task<List<Book>> GetBookListAsync();
         Task<Book> GetBookByIdAsync(int id);
+        Task<List<Book>> GetBookListAsync(int page, int pageSize);
         Task DeleteBookAsync(int id);
     }
 }

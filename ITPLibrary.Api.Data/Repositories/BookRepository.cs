@@ -40,10 +40,24 @@ namespace ITPLibrary.Api.Data.Repositories
             return (await _dbConnection.QueryAsync<Book>(sql)).AsList();
         }
 
-        public async Task<List<Book>> GetBookListAsync()
+        //public async Task<List<Book>> GetBookListAsync()
+        //{
+        //    var sql = "SELECT * FROM Books";
+        //    return (await _dbConnection.QueryAsync<Book>(sql)).AsList();
+        //}
+
+        public async Task<List<Book>> GetBookListAsync(int page, int pageSize)
         {
-            var sql = "SELECT * FROM Books";
-            return (await _dbConnection.QueryAsync<Book>(sql)).AsList();
+            var sql = @"SELECT * FROM Books
+                ORDER BY Id
+                OFFSET @Offset ROWS
+                FETCH NEXT @PageSize ROWS ONLY";
+
+            return (await _dbConnection.QueryAsync<Book>(sql, new
+            {
+                Offset = (page - 1) * pageSize,
+                PageSize = pageSize
+            })).AsList();
         }
 
         public async Task<Book> GetBookByIdAsync(int id)

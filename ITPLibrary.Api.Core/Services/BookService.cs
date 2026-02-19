@@ -52,9 +52,9 @@ namespace ITPLibrary.Api.Core.Services
             await _bookRepository.AddBookAsync(book);
         }
 
-        public async Task<List<BookListDto>> GetBookListAsync()
+        public async Task<List<BookListDto>> GetBookListAsync(int page, int pageSize)
         {
-            var books = await _bookRepository.GetBookListAsync();
+            var books = await _bookRepository.GetBookListAsync(page, pageSize);
 
             var bookListDtos = new List<BookListDto>();
             foreach (var book in books)

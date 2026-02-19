@@ -32,11 +32,18 @@ namespace ITPLibrary.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetBookList()
-        {
-            var books = await _bookService.GetBookListAsync();
-            return Ok(books);
-        }
+        public async Task<IActionResult> GetBookList(
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 10)
+            {
+                var books = await _bookService.GetBookListAsync(page, pageSize);
+                return Ok(books);
+            }
+        //public async Task<IActionResult> GetBookList()
+        //{
+        //    var books = await _bookService.GetBookListAsync();
+        //    return Ok(books);
+        //}
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetBookDetails([FromRoute] int id)
